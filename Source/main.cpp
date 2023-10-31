@@ -1,6 +1,14 @@
 #include <raylib.h>
-#include <iostream>
+#include "fnafmap.hpp"
 
 int main(void) {
-    std::cout << "ok\n";
+    InitWindow(WIDTH, HEIGHT, TITLE);
+
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        ClearBackground(BLACK);
+        EndDrawing();
+    }
+
+    CloseWindow();
 }
