@@ -6,4 +6,6 @@
 
 #define TITLE "FNAF MAP BUILDER"
 
+#include "ui/fnaf_menu.hpp"
+
 #endif /* __FNAFMAP_HPP__ */
