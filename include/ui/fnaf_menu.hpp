@@ -4,13 +4,15 @@
 #include <vector>
 #include <string>
 
+#include "fnafconf.h"
+
 namespace fnaf {
 namespace ui {
 
 typedef struct fnaf_menu_title {
     std::string content;
     unsigned int f_size;
-    unsigned int c_count;
+    int yoffset;
 } fnaf_menu_title;
 
 class fnaf_menu final {
