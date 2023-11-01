@@ -1,4 +1,3 @@
-
 # Five Nights At Freddy's: REWORKED
 
 This is the 3D Map Builder for the FNAF:R game.
