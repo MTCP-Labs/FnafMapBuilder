@@ -25,8 +25,8 @@ void fnaf_menu::load_menu() noexcept {
 }
 
 void fnaf_menu::handle_input() noexcept {
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !this->m_on_menu) {
-        this->m_on_menu = true;
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && this->m_on_menu) {
+        this->m_on_menu = false;
     }
 }
 
