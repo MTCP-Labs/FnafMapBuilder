@@ -40,10 +40,11 @@ public:
 
     void enable_free_roam(Vector3& start_point = (Vector3) {0, 0, 0}) noexcept;
     void update_camera() noexcept;
+    
     void set_movement_controls(const fnaf_camera_controls*) noexcept;
+    void set_current_pos(const Vector3&) noexcept;
 
-    Vector3 get_current_pos() const noexcept;
-    Vector3 set_current_pos() noexcept;
+    const Vector3 get_current_pos() const noexcept;
 
 };
 
