@@ -16,6 +16,7 @@ int main(void) {
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
+        DrawFPS(WIDTH - 6 * 12, 0);
         // Menu Handling
         menu.load_menu();
         menu.handle_input();

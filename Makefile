@@ -1,11 +1,11 @@
 SRC=src
 BUILD=build
 
-.PHONY: build
+.PHONY: run
 
-all: build
+all: run
 
-build: $(SRC)/main.cpp
+$(BUILD)/FnafBuilder: $(SRC)/main.cpp
 	if [ ! -d "build" ]; then \
 		mkdir build; \
 	fi
