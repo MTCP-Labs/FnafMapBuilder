@@ -1,6 +1,6 @@
 #include <raylib.h>
 #include "fnafmap.hpp"
-
+ 
 int main(void) {
 
     std::vector<fnaf::ui::fnaf_menu_title> menu_titles = {
@@ -11,6 +11,8 @@ int main(void) {
 
     InitWindow(WIDTH, HEIGHT, TITLE);
 
+    SetTargetFPS(60);
+
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
@@ -20,7 +22,7 @@ int main(void) {
         // End Menu Handling
         // Build Scene
         if (!menu.is_menu()) {
-            ClearBackground(BLUE);
+
         }
         // End Build Scene
         EndDrawing();
