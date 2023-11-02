@@ -23,7 +23,7 @@ int main(void) {
         // End Menu Handling
         // Build Scene
         if (!menu.is_menu()) {
-
+            DrawText("Build Mode Active", 10, 10, 30, GREEN);
         }
         // End Build Scene
         EndDrawing();
