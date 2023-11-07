@@ -1,4 +1,4 @@
-# Map Builder for FNAP:R
+# Map Builder for FNAF:R
 
 This is the 3D Map Builder for the FNAF:R game.
 
