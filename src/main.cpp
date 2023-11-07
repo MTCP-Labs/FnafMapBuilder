@@ -69,7 +69,8 @@ int main(void)
                     input += (char) key;
                 }
                 const char* text = input.c_str();
-                DrawText(text, 0, 0, 20, RED);
+                DrawText("ENTER MODEL NAME: ", 0, 0, 20, GREEN);
+                DrawText(text, 188, 0, 20, RED);
             }
             else {
                 BeginMode3D(camera);
