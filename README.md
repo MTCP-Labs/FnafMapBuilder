@@ -1,11 +1,7 @@
-# Raylib Map Builder
-A Map Builder using the Raylib library
+# Map Builder for FNAP:R
 
-## Usage
-Use the following command to run the Map Builder
-```bash
-./run.sh
-```
+This is the 3D Map Builder for the FNAF:R game.
 
-## Conclusion
-Thanks for trying it out 😄 
+Created by shab & Kaushik Kalesh
+
+`Copyright (C) 2023 MTCP-Labs. All Rights Reserved.`
