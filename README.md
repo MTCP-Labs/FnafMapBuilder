@@ -1,7 +1,11 @@
-# Five Nights At Freddy's: REWORKED
+# Raylib Map Builder
+A Map Builder using the Raylib library
 
-This is the 3D Map Builder for the FNAF:R game.
+## Usage
+Use the following command to run the Map Builder
+```bash
+./run.sh
+```
 
-Created by shab & KDawg
-
-`Copyright (C) 2023 MTCP-Labs. All Rights Reserved.`
+## Conclusion
+Thanks for trying it out 😄 
