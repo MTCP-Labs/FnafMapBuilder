@@ -4,9 +4,9 @@
 #include "log.hpp"
 
 void init_model(Model &model, Texture2D &texture, std::string input) {
-    model = LoadModel(("models/" + input + ".iqm").c_str());            // Load the animated model mesh and basic data
-    texture = LoadTexture(("models/" + input + ".png").c_str());        // Load model texture and set material
-    SetMaterialTexture(&model.materials[0], MATERIAL_MAP_DIFFUSE, texture);                                     // Set model material map texture
+    model = LoadModel(("models/" + input + ".iqm").c_str());                    // Load the animated model mesh and basic data
+    texture = LoadTexture(("models/" + input + ".png").c_str());                // Load model texture and set material
+    SetMaterialTexture(&model.materials[0], MATERIAL_MAP_DIFFUSE, texture);     // Set model material map texture
 }
 
 int main(void)
