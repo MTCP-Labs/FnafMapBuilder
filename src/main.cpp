@@ -37,7 +37,7 @@ int main(void)
 
     // Global variables
     std::string input;
-    bool isInputTerminated = false;
+    bool isMenuDisplayed = true;
     bool isModelInitialized = false;
 
     //--------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ int main(void)
     {
         UpdateCamera(&camera, CAMERA_FREE);
 
-        if (IsKeyPressed(KEY_F1)) {       // Reset the camera
+        if (IsKeyPressed(KEY_F2)) {       // Reset the camera
             camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; 
             camera.target = origin;
             camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };     
@@ -59,29 +59,37 @@ int main(void)
 
             ClearBackground(RAYWHITE);
 
-            if (IsKeyPressed(KEY_ENTER)) {      // Terminate input 
-                isInputTerminated = true;
+            if (!isMenuDisplayed && IsKeyPressed(KEY_F1)) {     // Open menu
+                isMenuDisplayed = true;
+            }
+
+            if (isMenuDisplayed && IsKeyPressed(KEY_ENTER)) {      // Close menu
+                isMenuDisplayed = false;
+                init_model(model, texture, input);
+                isModelInitialized = true;
             } 
             
-            if(!isInputTerminated) {
-                int key = GetCharPressed();
+            if(isMenuDisplayed) {
+                int key = GetCharPressed();     // Get model name as input 
                 if (key != 0) {
                     input += (char) key;
                 }
-                const char* text = input.c_str();
-                DrawText("ENTER MODEL NAME: ", 0, 0, 20, GREEN);
-                DrawText(text, 188, 0, 20, RED);
+
+                if (IsKeyPressed(KEY_BACKSPACE)) {
+                    input.pop_back();
+                }
+                
+                DrawRectangle(0, 0, screenWidth / 4, screenHeight, Fade(SKYBLUE, 0.5f));
+                DrawRectangleLines(0, 0, screenWidth / 4, screenHeight, BLUE);    
+                DrawText("ENTER MODEL NAME: ", 10, 10, 20, GREEN);
+                DrawText(input.c_str(), 236, 10, 20, RED);
             }
-            else {
+
+            if(!isMenuDisplayed && isModelInitialized) {
                 BeginMode3D(camera);
 
-                    if(!isModelInitialized) {
-                        init_model(model, texture, input);
-                        isModelInitialized = true;
-                    }
-
-                    DrawModelEx(model, origin, (Vector3){ 1.0f, 0.0f, 0.0f }, -90.0f, (Vector3){ 1.0f, 1.0f, 1.0f }, WHITE);
-                    DrawGrid(10, 1.0f);   
+                        DrawModelEx(model, origin, (Vector3){ 1.0f, 0.0f, 0.0f }, -90.0f, (Vector3){ 1.0f, 1.0f, 1.0f }, WHITE);
+                        DrawGrid(10, 1.0f);
 
                 EndMode3D();
             }
@@ -90,10 +98,8 @@ int main(void)
         //----------------------------------------------------------------------------------
     }
 
-    if (isModelInitialized) {
-        UnloadTexture(texture);     // Unload texture
-        UnloadModel(model);         // Unload model  
-    }      
+    UnloadTexture(texture);     // Unload texture
+    UnloadModel(model);         // Unload model  
 
     CloseWindow();     
 
