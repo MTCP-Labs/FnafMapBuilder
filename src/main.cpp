@@ -86,7 +86,7 @@ int main(void)
                 // Draw menu
                 DrawRectangle(0, 0, screenWidth / 4, screenHeight, Fade(SKYBLUE, 0.5f));
                 DrawRectangleLines(0, 0, screenWidth / 4, screenHeight, BLUE);    
-                DrawText("ENTER MODEL POS_Y: ", MENU_START_X, MENU_START_Y, 20, GREEN);
+                DrawText("ENTER MODEL POS_Y: ", MENU_START_X, MENU_START_Y, 20, DARKGREEN);
                 DrawText(input.c_str(), 244, MENU_START_Y, 20, RED);
             }
 
