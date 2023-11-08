@@ -1,3 +1,5 @@
 .vscode
 build
-./TODO.txt
+practice_build
+practice_src
+run.sh

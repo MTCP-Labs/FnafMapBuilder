@@ -1,9 +1,0 @@
-TODO:
-
-Use sep files for clean code
-
-Simple Menu with instructions
-
-Main Renderer Tool
-
-Move, Scale, Rotate tools for 3D objects

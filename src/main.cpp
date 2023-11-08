@@ -1,33 +1,101 @@
 #include <raylib.h>
-#include "fnafmap.hpp"
- 
-int main(void) {
+#include <string.h>
 
-    std::vector<fnaf::ui::fnaf_menu_title> menu_titles = {
-        (fnaf::ui::fnaf_menu_title) { "Welcome to the FNAF 3D Map Builder", 30, 100 },
-        (fnaf::ui::fnaf_menu_title) { "Left Click to begin building", 25, 30 }
-    };
-    fnaf::ui::fnaf_menu menu(menu_titles);
+#include "log.hpp"
 
-    InitWindow(WIDTH, HEIGHT, TITLE);
+void init_model(Model &model, Texture2D &texture, std::string input) {
+    model = LoadModel(("models/" + input + ".iqm").c_str());            // Load the animated model mesh and basic data
+    texture = LoadTexture(("models/" + input + ".png").c_str());        // Load model texture and set material
+    SetMaterialTexture(&model.materials[0], MATERIAL_MAP_DIFFUSE, texture);                                     // Set model material map texture
+}
 
-    SetTargetFPS(60);
+int main(void)
+{
+    // Initialization
+    //--------------------------------------------------------------------------------------
+    const int screenWidth = 1920;
+    const int screenHeight = 1080;
 
-    while (!WindowShouldClose()) {
-        BeginDrawing();
-        ClearBackground(BLACK);
-        DrawFPS(WIDTH - 6 * 12, 0);
-        // Menu Handling
-        menu.load_menu();
-        menu.handle_input();
-        // End Menu Handling
-        // Build Scene
-        if (!menu.is_menu()) {
-            DrawText("Build Mode Active", 10, 10, 30, GREEN);
+    InitWindow(screenWidth, screenHeight, "GAME");
+    SetWindowState(FLAG_WINDOW_MAXIMIZED);
+    DisableCursor();                                 
+    SetTargetFPS(60);  
+
+    const Vector3 origin = {0.0f, 0.0f, 0.0f};
+
+    // Define the camera (3D)
+    Camera3D camera = { 0 };
+    camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; 
+    camera.target = origin;                      
+    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };       
+    camera.fovy = 45.0f;                                
+    camera.projection = CAMERA_PERSPECTIVE;          
+
+    // Model Initialization
+    Model model;
+    Texture2D texture;
+
+    // Global variables
+    std::string input;
+    bool isInputTerminated = false;
+    bool isModelInitialized = false;
+
+    //--------------------------------------------------------------------------------------
+
+    // Main game loop
+    while (!WindowShouldClose()) 
+    {
+        UpdateCamera(&camera, CAMERA_FREE);
+
+        if (IsKeyPressed(KEY_F1)) {       // Reset the camera
+            camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; 
+            camera.target = origin;
+            camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };     
         }
-        // End Build Scene
+        
+        // Draw
+        //----------------------------------------------------------------------------------
+        BeginDrawing();
+
+            ClearBackground(RAYWHITE);
+
+            if (IsKeyPressed(KEY_ENTER)) {      // Terminate input 
+                isInputTerminated = true;
+            } 
+            
+            if(!isInputTerminated) {
+                int key = GetCharPressed();
+                if (key != 0) {
+                    input += (char) key;
+                }
+                const char* text = input.c_str();
+                DrawText("ENTER MODEL NAME: ", 0, 0, 20, GREEN);
+                DrawText(text, 188, 0, 20, RED);
+            }
+            else {
+                BeginMode3D(camera);
+
+                    if(!isModelInitialized) {
+                        init_model(model, texture, input);
+                        isModelInitialized = true;
+                    }
+
+                    DrawModelEx(model, origin, (Vector3){ 1.0f, 0.0f, 0.0f }, -90.0f, (Vector3){ 1.0f, 1.0f, 1.0f }, WHITE);
+                    DrawGrid(10, 1.0f);   
+
+                EndMode3D();
+            }
+
         EndDrawing();
+        //----------------------------------------------------------------------------------
     }
 
-    CloseWindow();
+    if (isModelInitialized) {
+        UnloadTexture(texture);     // Unload texture
+        UnloadModel(model);         // Unload model  
+    }      
+
+    CloseWindow();     
+
+    return 0;
 }
