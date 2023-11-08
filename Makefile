@@ -1,15 +1,15 @@
-SRC=src
-BUILD=build
+SRC:=src
+BUILD:=build
 
-.PHONY: build
+.PHONY: run
 
-all: build
+all: run
 
-build: $(SRC)/main.cpp
+$(BUILD)/FnafBuilder: $(SRC)/main.cpp
 	if [ ! -d "build" ]; then \
 		mkdir build; \
 	fi
-	g++ -std=c++14 $< $(SRC)/**/*.cpp -I./include -o $(BUILD)/FnafBuilder.o `pkg-config raylib --libs --cflags pkg-config nlohmann_json --cflags`
+	g++ -std=c++14 $< -I./include -o $(BUILD)/FnafBuilder `pkg-config raylib --libs --cflags pkg-config nlohmann_json --cflags`
 
-run: $(BUILD)/FnafBuilder.o
+run: $(BUILD)/FnafBuilder
 	./$<

@@ -2,6 +2,6 @@
 
 This is the 3D Map Builder for the FNAF:R game.
 
-Created by shab
+Created by shab & KDawg
 
 `Copyright (C) 2023 MTCP-Labs. All Rights Reserved.`
