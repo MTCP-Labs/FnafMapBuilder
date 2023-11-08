@@ -2,12 +2,10 @@
 #include <string.h>
 
 #include "log.hpp"
+#include "modelex.hpp"
 
-void init_model(Model &model, Texture2D &texture, std::string input) {
-    model = LoadModel(("models/" + input + ".iqm").c_str());                    // Load the animated model mesh and basic data
-    texture = LoadTexture(("models/" + input + ".png").c_str());                // Load model texture and set material
-    SetMaterialTexture(&model.materials[0], MATERIAL_MAP_DIFFUSE, texture);     // Set model material map texture
-}
+#define MENU_START_X 10
+#define MENU_START_Y 10
 
 int main(void)
 {
@@ -21,24 +19,26 @@ int main(void)
     DisableCursor();                                 
     SetTargetFPS(60);  
 
-    const Vector3 origin = {0.0f, 0.0f, 0.0f};
+    // Global Constants
+    const Vector3 zeroes = {0.0f, 0.0f, 0.0f};
+    const Vector3 ones = {1.0f, 1.0f, 1.0f};
 
     // Define the camera (3D)
     Camera3D camera = { 0 };
     camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; 
-    camera.target = origin;                      
+    camera.target = zeroes;                      
     camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };       
     camera.fovy = 45.0f;                                
     camera.projection = CAMERA_PERSPECTIVE;          
 
-    // Model Initialization
-    Model model;
-    Texture2D texture;
-
     // Global variables
     std::string input;
+
     bool isMenuDisplayed = true;
     bool isModelInitialized = false;
+
+    ModelEx model_man;
+    Texture2D texture;
 
     //--------------------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ int main(void)
 
         if (IsKeyPressed(KEY_F2)) {       // Reset the camera
             camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; 
-            camera.target = origin;
+            camera.target = zeroes;
             camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };     
         }
         
@@ -59,19 +59,23 @@ int main(void)
 
             ClearBackground(RAYWHITE);
 
-            if (!isMenuDisplayed && IsKeyPressed(KEY_F1)) {     // Open menu
+            if (!isMenuDisplayed && IsKeyPressed(KEY_F1)) {     // Display menu
                 isMenuDisplayed = true;
             }
 
-            if (isMenuDisplayed && IsKeyPressed(KEY_ENTER)) {      // Close menu
+            if (isMenuDisplayed && IsKeyPressed(KEY_ENTER)) {      // Hide menu
                 isMenuDisplayed = false;
-                init_model(model, texture, input);
+
+                texture = LoadTexture("models/guy.png");               
+                model_man = ModelEx(LoadModel("models/guy.iqm"), (Vector3){0.0f, stof(input), 0.0f}, (Vector3){1.0f, 0.0f, 0.0f}, -90.0f, ones);        // Initialize ModelEx 
+                SetMaterialTexture(&(model_man.model).materials[0], MATERIAL_MAP_DIFFUSE, texture);  
+
                 isModelInitialized = true;
             } 
             
             if(isMenuDisplayed) {
-                int key = GetCharPressed();     // Get model name as input 
-                if (key != 0) {
+                int key = GetCharPressed();     // Get new y-coordinate of the model as input 
+                if (key >= (int) '0' && key <= (int) '9' || key == (int) '-') {
                     input += (char) key;
                 }
 
@@ -79,17 +83,18 @@ int main(void)
                     input.pop_back();
                 }
                 
+                // Draw menu
                 DrawRectangle(0, 0, screenWidth / 4, screenHeight, Fade(SKYBLUE, 0.5f));
                 DrawRectangleLines(0, 0, screenWidth / 4, screenHeight, BLUE);    
-                DrawText("ENTER MODEL NAME: ", 10, 10, 20, GREEN);
-                DrawText(input.c_str(), 236, 10, 20, RED);
+                DrawText("ENTER MODEL POS_Y: ", MENU_START_X, MENU_START_Y, 20, GREEN);
+                DrawText(input.c_str(), 244, MENU_START_Y, 20, RED);
             }
 
             if(!isMenuDisplayed && isModelInitialized) {
                 BeginMode3D(camera);
 
-                        DrawModelEx(model, origin, (Vector3){ 1.0f, 0.0f, 0.0f }, -90.0f, (Vector3){ 1.0f, 1.0f, 1.0f }, WHITE);
-                        DrawGrid(10, 1.0f);
+                    model_man.draw();
+                    DrawGrid(10, 1.0f);
 
                 EndMode3D();
             }
@@ -99,7 +104,7 @@ int main(void)
     }
 
     UnloadTexture(texture);     // Unload texture
-    UnloadModel(model);         // Unload model  
+    UnloadModel(model_man.model);       // Unload model  
 
     CloseWindow();     
 
