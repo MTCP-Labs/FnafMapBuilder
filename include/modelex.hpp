@@ -6,14 +6,13 @@
 class ModelEx {
 public:
     Model model;
-    Vector3 position;
-    Vector3 rotationAxis;
+    Vector3 position, rotationAxis, scale;
     float rotationAngle;
-    Vector3 scale;
 public:
     ModelEx();
     ModelEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale);
     ~ModelEx();
+    
     void draw();
 };
 
