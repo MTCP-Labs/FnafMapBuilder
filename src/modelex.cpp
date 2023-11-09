@@ -7,5 +7,5 @@ ModelEx::ModelEx(Model model, Vector3 position, Vector3 rotationAxis, float rota
 ModelEx::~ModelEx() {}
 
 void ModelEx::draw() {
-    DrawModelEx(this->model, this->position, this->rotationAxis, this->rotationAngle, this->scale, WHITE);
+    DrawModelEx(model, position, rotationAxis, rotationAngle, scale, WHITE);
 }
