@@ -11,7 +11,7 @@ public:
     std::string text;
     Color color;
     bool isInFocus = false;
-public:
+    
     InputBox();
     InputBox(int pos_x, int pos_y, int width, int height, std::string text, Color color);
     ~InputBox();

@@ -6,11 +6,12 @@
 class ModelEx {
 public:
     Model model;
+    Texture2D texture;
     Vector3 position, rotationAxis, scale;
     float rotationAngle;
-public:
+
     ModelEx();
-    ModelEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale);
+    ModelEx(Model model, Texture2D texture, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale);
     ~ModelEx();
     
     void draw();
