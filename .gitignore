@@ -1,5 +1,4 @@
 .vscode
 build
-practice
-run.sh
 header.sh
+main.cpp
