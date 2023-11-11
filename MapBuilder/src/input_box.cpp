@@ -11,9 +11,10 @@ void InputBox::draw() {
     DrawText(text.c_str(), pos_x + 0.05 * width, pos_y, height, color);
 }
 
-void InputBox::in_focus() {
+bool InputBox::in_focus() {
     int mouse_x = GetMouseX(), mouse_y = GetMouseY();
     isInFocus = (mouse_x >= pos_x && mouse_x <= pos_x + width) && (mouse_y >= pos_y && mouse_y <= pos_y + height);
+    return isInFocus;
 }
 
 void InputBox::get_input() {

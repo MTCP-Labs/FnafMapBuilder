@@ -2,16 +2,16 @@
 
 void print(LOG_TYPE log_type, std::string out) {
     switch (log_type) {
-        case 0:
+        case LT_ERROR:
             std::cout << "ERROR: ";
             break;
-        case 1:
+        case LT_DEBUG:
             std::cout << "DEBUG: ";
             break;
-        case 2:
+        case LT_INFO:
             std::cout << "INFO: ";
             break;
-        case 3:
+        case LT_INPUT:
             std::cout << "INPUT: ";
             break;
         default:
