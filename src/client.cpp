@@ -24,7 +24,7 @@ int main() {
     
     // Initialize the map builder
     ModelEx man_model = ModelEx(LoadModel("models/guy.iqm"), LoadTexture("models/guy.png"), zeroes, (Vector3){1.0f, 0.0f, 0.0f}, -90.0f, ones);
-    MapBuilder mb = MapBuilder(man_model, camera, KEY_F1);
+    MapBuilder mb = MapBuilder(man_model, camera);
     //--------------------------------------------------------------------------------------
 
     while(!WindowShouldClose()) {
