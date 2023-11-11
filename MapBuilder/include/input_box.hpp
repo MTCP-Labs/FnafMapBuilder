@@ -17,7 +17,7 @@ public:
     ~InputBox();
 
     void draw();
-    void in_focus();
+    bool in_focus();
     void get_input();
 };
 
