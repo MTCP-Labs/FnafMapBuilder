@@ -1,45 +1,51 @@
 #ifndef __MAPBUILDER_HPP__
 #define __MAPBUILDER_HPP__
 
-#include <vector>
-#include <cmath>
+#include <raylib.h>
+#include <raymath.h>
 
-#include "log.hpp"
-#include "modelex.hpp"
 #include "input_box.hpp"
+#include "model_list.hpp"
 
-class MapBuilder {
+class MapBuilder : public ModelList {
 private:
     const int MENU_START_X = 10, MENU_START_Y = 0;
     const Vector3 zeroes = {0.0f, 0.0f, 0.0f}, ones = {1.0f, 1.0f, 1.0f};
-    
-    float *modelex_property_list[3][3];
+
+    int screenWidth, screenHeight;
+    bool isMenuDisplayed = false;  
+
+    Camera3D camera = { 0 };
+
+    Model *inFocusModel;
+    float rotationAngle;
+    float propertyList[3][3];
 
     InputBox inputBoxList[3][3];
-    InputBox *inFocusInputBox = nullptr;
+    InputBox *inFocusInputBox;  
 
-    bool isMenuDisplayed = true;    
 
     float text_size(int fontSize, int len);
-    
-    void init_modelex_property_list();
+
+    void init_camera();
+
+    void init_property_list();
+    void update_infocus_model();
+    void set_transform();
 
     void init_input_box_list();
     void draw_input_box_list();
     void set_infocus_input_box();
     void reset_infocus_input_box();
 
-    void update_modelex();
 public:
-    ModelEx modelEx;
-    Camera3D camera;
     KeyboardKey MENU_KEY = KEY_F1;
+    KeyboardKey CAMERA_RESET_KEY = KEY_F2;
 
-    MapBuilder(ModelEx modelEx, Camera3D camera);
-    MapBuilder(ModelEx modelEx, Camera3D camera, KeyboardKey CUSTOM_MENU_KEY);
+    MapBuilder();
     ~MapBuilder();
 
-    void init_map_builder(int screenWidth, int screenHeight);
+    void init_map_builder();
 };
 
 #endif /*__MAPBUILDER_HPP__*/

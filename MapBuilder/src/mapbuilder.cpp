@@ -1,35 +1,26 @@
 #include "mapbuilder.hpp"
 
-MapBuilder::MapBuilder(ModelEx modelEx, Camera3D camera): modelEx(modelEx), camera(camera) {
-    init_modelex_property_list();
-    init_input_box_list();
-}
+#include <iostream>
 
-MapBuilder::MapBuilder(ModelEx modelEx, Camera3D camera, KeyboardKey CUSTOM_MENU_KEY): modelEx(modelEx), camera(camera), MENU_KEY(CUSTOM_MENU_KEY) {
-    init_modelex_property_list();
-    init_input_box_list();
+MapBuilder::MapBuilder() : ModelList() {
+    init_camera();
 }
 
 MapBuilder::~MapBuilder() {}
+
+void MapBuilder::init_camera() {
+    camera.position = (Vector3){ 50.0f, 50.0f, 50.0f }; 
+    camera.target = zeroes;                      
+    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };       
+    camera.fovy = 45.0f;                                
+    camera.projection = CAMERA_PERSPECTIVE; 
+}
 
 float MapBuilder::text_size(int fontSize, int len) {
     const float FONT_SIZE_FACTOR = 0.7;
     return FONT_SIZE_FACTOR * fontSize * len;
 }
 
-void MapBuilder::init_modelex_property_list() {
-    modelex_property_list[0][0] = &modelEx.position.x;
-    modelex_property_list[0][1] = &modelEx.position.y;
-    modelex_property_list[0][2] = &modelEx.position.z;
-
-    modelex_property_list[1][0] = &modelEx.rotationAxis.x;
-    modelex_property_list[1][1] = &modelEx.rotationAxis.y;
-    modelex_property_list[1][2] = &modelEx.rotationAxis.z;
-
-    modelex_property_list[2][0] = &modelEx.scale.x;
-    modelex_property_list[2][1] = &modelEx.scale.y;
-    modelex_property_list[2][2] = &modelEx.scale.z;
-}
 
 void MapBuilder::init_input_box_list() {
     const int INPUT_BOX_START_X = MENU_START_X + text_size(20, 2);
@@ -39,11 +30,11 @@ void MapBuilder::init_input_box_list() {
 
     for(int i = 0; i < 3; i++) {
         for(int j = 0; j < 3; j++) {
-            if(i == 1) {
-                inputBoxList[i][j] = InputBox(INPUT_BOX_START_X + j * text_size(20, MAX_DIGITS + 3), INPUT_BOX_START_Y + (i + 1) * text_size(20, 4), text_size(20, MAX_DIGITS), 20, std::to_string((int) (*modelex_property_list[i][j] * modelEx.rotationAngle)), RED);
+            if(i == 1 && propertyList[i][j] == 1) {
+                inputBoxList[i][j] = InputBox(INPUT_BOX_START_X + j * text_size(20, MAX_DIGITS + 3), INPUT_BOX_START_Y + (i + 1) * text_size(20, 4), text_size(20, MAX_DIGITS), 20, TextFormat("%.2f", propertyList[i][j] * (rotationAngle * RAD2DEG)), RED);
             }
             else {
-                inputBoxList[i][j] = InputBox(INPUT_BOX_START_X + j * text_size(20, MAX_DIGITS + 3), INPUT_BOX_START_Y + (i + 1) * text_size(20, 4), text_size(20, MAX_DIGITS), 20, std::to_string((int) *modelex_property_list[i][j]), RED);
+                inputBoxList[i][j] = InputBox(INPUT_BOX_START_X + j * text_size(20, MAX_DIGITS + 3), INPUT_BOX_START_Y + (i + 1) * text_size(20, 4), text_size(20, MAX_DIGITS), 20, TextFormat("%.2f", propertyList[i][j]), RED);
             }
         }
     }
@@ -67,7 +58,7 @@ void MapBuilder::draw_input_box_list() {
 void MapBuilder::set_infocus_input_box() {
     for(int i = 0; i < 3; i++) {
         for(int j = 0; j < 3; j++) {
-            if(inputBoxList[i][j].in_focus()) {
+            if(inputBoxList[i][j].is_in_focus()) {
                 inputBoxList[i][j].isInFocus = true;
                 inFocusInputBox = &inputBoxList[i][j];
             }
@@ -82,30 +73,109 @@ void MapBuilder::reset_infocus_input_box() {
     }
 }
 
-void MapBuilder::update_modelex() {
+
+void MapBuilder::init_property_list() {
+    Matrix t = inFocusModel->transform;
+
+    // printf("Transformation Matrix:\n");
+    // printf("[ %f, %f, %f, %f ]\n", t.m0, t.m4, t.m8, t.m12);
+    // printf("[ %f, %f, %f, %f ]\n", t.m1, t.m5, t.m9, t.m13);
+    // printf("[ %f, %f, %f, %f ]\n", t.m2, t.m6, t.m10, t.m14);
+    // printf("[ %f, %f, %f, %f ]\n", t.m3, t.m7, t.m11, t.m15);
+
+    // Update position of the model
+    propertyList[0][0] = t.m12;
+    propertyList[0][1] = t.m13;
+    propertyList[0][2] = t.m14;
+
+    // Update rotation of the model
+    Vector3 rotationAxis;
+    QuaternionToAxisAngle(QuaternionFromMatrix(t), &rotationAxis, &rotationAngle);
+
+    propertyList[1][0] = (int) rotationAxis.x;
+    propertyList[1][1] = (int) rotationAxis.y;
+    propertyList[1][2] = (int) rotationAxis.z;
+
+    // Update scale of the model
+    propertyList[2][0] = Vector3Length((Vector3){ t.m0, t.m1, t.m2 });
+    propertyList[2][1] = Vector3Length((Vector3){ t.m4, t.m5, t.m6 });
+    propertyList[2][2] = Vector3Length((Vector3){ t.m8, t.m9, t.m10 });
+
+    init_input_box_list();
+}
+
+void MapBuilder::set_transform() {
+    Matrix translation = MatrixTranslate(propertyList[0][0], propertyList[0][1], propertyList[0][2]);
+    Matrix rotation = MatrixRotate((Vector3) {propertyList[1][0], propertyList[1][1], propertyList[1][2]}, rotationAngle);
+    Matrix scale = MatrixScale(propertyList[2][0], propertyList[2][1], propertyList[2][2]);
+
+    inFocusModel->transform = MatrixMultiply(scale, MatrixMultiply(rotation, translation));
+}
+
+void MapBuilder::update_infocus_model() {
+    bool isRotationAngleZero = true;
+
     for(int i = 0; i < 3; i++) {
         for(int j = 0; j < 3; j++) {
-            if(i == 1 && inputBoxList[i][j].text != "0") {
-                modelEx.rotationAngle = stof(inputBoxList[i][j].text);
-                *modelex_property_list[i][j] = 1;
+            inputBoxList[i][j].text = TextFormat("%.2f", stof(inputBoxList[i][j].text));
+            if(i == 1 && stof(inputBoxList[i][j].text) != 0) {
+                isRotationAngleZero = false;
+                rotationAngle = stof(inputBoxList[i][j].text) * DEG2RAD;
+                propertyList[i][j] = 1;
             }
             else {
-                *modelex_property_list[i][j] = stof(inputBoxList[i][j].text);
+                propertyList[i][j] = stof(inputBoxList[i][j].text);
             }
         }
     }
+
+    if(isRotationAngleZero) {
+        rotationAngle = 0.0f;
+        propertyList[1][0] = 1;     // Set an arbitrary rotation axis if rotation angle is zero
+    }
+
+    set_transform();
 }
 
-void MapBuilder::init_map_builder(int screenWidth, int screenHeight) {
+void MapBuilder::init_map_builder() {
+    if(modelList.size() == 0) {
+        std::cerr << "ERROR: No Models in the Map Builder!" << std::endl;
+        exit(0);
+    }
+
+    screenWidth = GetScreenWidth();
+    screenHeight = GetScreenHeight();
+
     UpdateCamera(&camera, CAMERA_FREE);
 
-    // Reset the camera (for debugging purposes only)
-    if (IsKeyPressed(KEY_F2)) {       
-        camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; 
-        camera.target = zeroes;
-        camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };     
-    }
+    // Vector3 movement = { 0.0f, 0.0f, 0.0f };
+    // Vector3 rotation = { 0.0f, 0.0f, 0.0f };
+    // float zoom = 0.0f;
+
+    // // Calculate the forward vector based on the position and target
+    // Vector3 forward = Vector3Normalize(Vector3Subtract(camera.target, camera.position));
+
+    // // Camera movement with WASD keys
+    // if (IsKeyDown(KEY_W)) movement = Vector3Scale(Vector3CrossProduct(camera.up, forward), 1.0f);
+    // if (IsKeyDown(KEY_S)) movement = Vector3Scale(Vector3CrossProduct(forward, camera.up), 1.0f);
+    // if (IsKeyDown(KEY_A)) movement.y -= 1.0f;
+    // if (IsKeyDown(KEY_D)) movement.y += 1.0f;
+
+    // // Camera rotation with arrow keys
+    // if (IsKeyDown(KEY_UP)) rotation.y -= 1.0f;
+    // if (IsKeyDown(KEY_DOWN)) rotation.y += 1.0f;
+    // if (IsKeyDown(KEY_LEFT)) rotation.x -= 1.0f;
+    // if (IsKeyDown(KEY_RIGHT)) rotation.x += 1.0f;
+
+    // // Camera zoom based on mouse wheel movement
+    // zoom = GetMouseWheelMove();
+
+    // UpdateCameraPro(&camera, movement, rotation, zoom);
     
+    if (IsKeyPressed(CAMERA_RESET_KEY)) {       
+        init_camera();
+    }
+
     BeginDrawing();
 
         ClearBackground(RAYWHITE);
@@ -113,21 +183,28 @@ void MapBuilder::init_map_builder(int screenWidth, int screenHeight) {
         // Menu
         //--------------------------------------------------------------------------------------
         // Display menu
-        if (!isMenuDisplayed && IsKeyPressed(MENU_KEY)) {     
-            isMenuDisplayed = true;
-            EnableCursor();     // Enable cursor for the menu
+        if (!isMenuDisplayed && IsKeyPressed(MENU_KEY)) {
+            inFocusModel = get_infocus_model(camera);
+            
+            if(inFocusModel) {     
+                isMenuDisplayed = true;
+                
+                init_property_list();       // Update property list of the model in focus using it's transformation matrix
+
+                EnableCursor();     // Enable cursor for the menu
+            }
         }
 
         // Hide menu
         if (isMenuDisplayed && IsKeyPressed(KEY_ENTER)) {   
             isMenuDisplayed = false;
-            update_modelex();
+
+            update_infocus_model();
             reset_infocus_input_box();
 
-            DisableCursor();        // Disable cursor for the game
+            DisableCursor();       // Disable cursor for the map builder
         } 
         
-        // Get new y-coordinate of the model as input 
         if(isMenuDisplayed) {
             // Draw menu
             DrawRectangle(0, 0, screenWidth / 4, screenHeight, Fade(SKYBLUE, 0.5f));
@@ -139,7 +216,7 @@ void MapBuilder::init_map_builder(int screenWidth, int screenHeight) {
             }
 
             if(inFocusInputBox) {
-                inFocusInputBox->get_input();
+                inFocusInputBox->get_float_input();
             }
 
             draw_input_box_list();
@@ -147,11 +224,13 @@ void MapBuilder::init_map_builder(int screenWidth, int screenHeight) {
         //--------------------------------------------------------------------------------------
 
         if(!isMenuDisplayed) {
+            DrawCircle(screenWidth / 2, screenHeight / 2, 5.0f, DARKPURPLE);        // Draw crosshair
+
             // Begin 3D scene
             BeginMode3D(camera);
 
-                modelEx.draw();
-                DrawGrid(1000, 1.0f);
+                draw_all_models();
+                DrawGrid(1000, 10.0f);
 
             EndMode3D();
         }
