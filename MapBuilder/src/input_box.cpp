@@ -7,20 +7,20 @@ InputBox::InputBox(int pos_x, int pos_y, int width, int height, std::string text
 InputBox::~InputBox() {}
 
 void InputBox::draw() {
-    DrawRectangle(pos_x, pos_y, width, height, WHITE);
+    DrawRectangle(pos_x, pos_y, width, height, (isInFocus) ? BLACK : WHITE);
     DrawText(text.c_str(), pos_x + 0.05 * width, pos_y, height, color);
 }
 
-bool InputBox::in_focus() {
+bool InputBox::is_in_focus() {
     int mouse_x = GetMouseX(), mouse_y = GetMouseY();
     isInFocus = (mouse_x >= pos_x && mouse_x <= pos_x + width) && (mouse_y >= pos_y && mouse_y <= pos_y + height);
     return isInFocus;
 }
 
-void InputBox::get_input() {
+void InputBox::get_float_input() {
     int key = GetCharPressed();     
-    if (key >= (int) '0' && key <= (int) '9' || key == (int) '-') {
-        if(text[0] == '0') {
+    if (key >= (int) '0' && key <= (int) '9' || key == (int) '-' || key == (int) '.') {
+        if(text.size() == 1 && text[0] == '0' && key != (int) '.') {
             text.pop_back();
         }
         text.push_back(key);

@@ -2,8 +2,7 @@
 #define __INPUT_BOX_HPP__
 
 #include <raylib.h>
-#include <iostream>
-#include "log.hpp"
+#include <string>
 
 class InputBox {
 public:
@@ -17,8 +16,8 @@ public:
     ~InputBox();
 
     void draw();
-    bool in_focus();
-    void get_input();
+    bool is_in_focus();
+    void get_float_input();
 };
 
 #endif /*__INPUT_BOX_HPP__*/
