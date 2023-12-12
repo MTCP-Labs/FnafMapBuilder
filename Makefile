@@ -1,15 +1,20 @@
-SRC:=src
+MAPBUILDER_ROOT=MapBuilder
+MAPBUILDER_SRC:=$(MAPBUILDER_ROOT)/src
+MAPBUILDER_INCLUDE:=$(MAPBUILDER_ROOT)/include
+
+SRC=src
 BUILD:=build
 
-.PHONY: run
+.PHONY: all run clean
 
 all: run
 
-$(BUILD)/FnafBuilder: $(SRC)/main.cpp
-	if [ ! -d "build" ]; then \
-		mkdir build; \
-	fi
-	g++ -std=c++14 $< -I./include -o $(BUILD)/FnafBuilder `pkg-config raylib --libs --cflags pkg-config nlohmann_json --cflags`
+$(BUILD): 
+	mkdir build
 
-run: $(BUILD)/FnafBuilder
-	./$<
+run: $(BUILD)
+	g++ -std=c++20 $(MAPBUILDER_SRC)/*.cpp $(SRC)/*.cpp -I$(MAPBUILDER_INCLUDE) -o$(BUILD)/main `pkg-config raylib --libs --cflags pkg-config nlohmann_json --cflags`
+	./$(BUILD)/main
+
+clean: $(BUILD)
+	rm -rf $(BUILD)

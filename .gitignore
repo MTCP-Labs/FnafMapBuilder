@@ -1,3 +1,4 @@
 .vscode
 build
-./TODO.txt
+header.sh
+properties.json
