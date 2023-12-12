@@ -10,7 +10,7 @@ Model* ModelList::get(std::string id) {
     return (modelList.find(id) != modelList.end()) ? modelList[id] : nullptr;
 }
 
-Model* ModelList::get_infocus_model(Camera3D camera) {
+std::string ModelList::get_infocus_model_id(Camera3D camera) {
     Ray ray = (Ray){ camera.position, Vector3Normalize(Vector3Subtract(camera.target, camera.position))};
 
     RayCollision collision = { 0 };
@@ -33,7 +33,7 @@ Model* ModelList::get_infocus_model(Camera3D camera) {
 
         if (meshHitInfo.hit)
         {
-            return p.second;        // Return the model which collided with the ray
+            return p.first;        // Return the model which collided with the ray
         }
     }
 

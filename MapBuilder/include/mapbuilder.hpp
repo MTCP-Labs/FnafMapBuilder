@@ -17,6 +17,7 @@ private:
 
     Camera3D camera = { 0 };
 
+    std::string inFocusModelId;
     Model *inFocusModel;
     float rotationAngle;
     float propertyList[3][3];
