@@ -24,7 +24,7 @@ protected:
     bool isLoaded = false;
 
     Model* get(std::string id);
-    Model* get_infocus_model(Camera3D camera);
+    std::string get_infocus_model_id(Camera3D camera);
     void load_properties();
     void store_properties();
 public:
