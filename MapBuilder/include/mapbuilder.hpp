@@ -45,7 +45,7 @@ public:
     MapBuilder();
     ~MapBuilder();
 
-    void init_map_builder();
+    void update_map_builder();
 };
 
 #endif /*__MAPBUILDER_HPP__*/

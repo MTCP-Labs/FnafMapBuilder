@@ -137,7 +137,7 @@ void MapBuilder::update_infocus_model() {
     set_transform();
 }
 
-void MapBuilder::init_map_builder() {
+void MapBuilder::update_map_builder() {
     if(modelList.size() == 0) {
         std::cerr << "ERROR: No Models in the Map Builder!" << std::endl;
         exit(0);
