@@ -31,10 +31,10 @@ void MapBuilder::init_input_box_list() {
     for(int i = 0; i < 3; i++) {
         for(int j = 0; j < 3; j++) {
             if(i == 1 && propertyList[i][j] == 1) {
-                inputBoxList[i][j] = InputBox(INPUT_BOX_START_X + j * text_size(20, MAX_DIGITS + 3), INPUT_BOX_START_Y + (i + 1) * text_size(20, 4), text_size(20, MAX_DIGITS), 20, TextFormat("%.2f", propertyList[i][j] * (rotationAngle * RAD2DEG)), RED);
+                inputBoxList[i][j] = InputBox(INPUT_BOX_START_X + j * text_size(20, MAX_DIGITS + 3), INPUT_BOX_START_Y + (i + 1) * text_size(20, 4) + 10, text_size(20, MAX_DIGITS), 20, TextFormat("%.2f", propertyList[i][j] * (rotationAngle * RAD2DEG)), RED);
             }
             else {
-                inputBoxList[i][j] = InputBox(INPUT_BOX_START_X + j * text_size(20, MAX_DIGITS + 3), INPUT_BOX_START_Y + (i + 1) * text_size(20, 4), text_size(20, MAX_DIGITS), 20, TextFormat("%.2f", propertyList[i][j]), RED);
+                inputBoxList[i][j] = InputBox(INPUT_BOX_START_X + j * text_size(20, MAX_DIGITS + 3), INPUT_BOX_START_Y + (i + 1) * text_size(20, 4) + 10, text_size(20, MAX_DIGITS), 20, TextFormat("%.2f", propertyList[i][j]), RED);
             }
         }
     }
@@ -137,7 +137,7 @@ void MapBuilder::update_infocus_model() {
     set_transform();
 }
 
-void MapBuilder::init_map_builder() {
+void MapBuilder::update_map_builder() {
     if(modelList.size() == 0) {
         std::cerr << "ERROR: No Models in the Map Builder!" << std::endl;
         exit(0);
@@ -184,7 +184,8 @@ void MapBuilder::init_map_builder() {
         //--------------------------------------------------------------------------------------
         // Display menu
         if (!isMenuDisplayed && IsKeyPressed(MENU_KEY)) {
-            inFocusModel = get_infocus_model(camera);
+            inFocusModelId = get_infocus_model_id(camera);
+            inFocusModel = get(inFocusModelId);
             
             if(inFocusModel) {     
                 isMenuDisplayed = true;
@@ -219,6 +220,8 @@ void MapBuilder::init_map_builder() {
                 inFocusInputBox->get_float_input();
             }
 
+            DrawText("MODEL ID: ", MENU_START_X, MENU_START_Y + 10, 20, DARKGREEN);
+            DrawText(inFocusModelId.c_str(), text_size(20, 9), MENU_START_Y + 10, 20, YELLOW);
             draw_input_box_list();
         }
         //--------------------------------------------------------------------------------------

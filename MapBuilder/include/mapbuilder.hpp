@@ -17,6 +17,7 @@ private:
 
     Camera3D camera = { 0 };
 
+    std::string inFocusModelId;
     Model *inFocusModel;
     float rotationAngle;
     float propertyList[3][3];
@@ -45,7 +46,7 @@ public:
     MapBuilder();
     ~MapBuilder();
 
-    void init_map_builder();
+    void update_map_builder();
 };
 
 #endif /*__MAPBUILDER_HPP__*/

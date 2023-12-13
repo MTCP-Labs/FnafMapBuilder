@@ -36,12 +36,15 @@ int main() {
     //--------------------------------------------------------------------------------------
 
     while(!WindowShouldClose()) {
-        // UpdateCamera(&camera, CAMERA_FREE);        // Ignore your camera when running the map builder
-        mb.init_map_builder();
+        // Ignore when running map builder
+        //----------------------------------------------------------------
+        // UpdateCamera(&camera, CAMERA_FREE);        
+        // mb.draw_all_models();
+        //----------------------------------------------------------------
+        mb.update_map_builder();
     }  
 
-    mb.unload_all_models();
-    mb.unload_all_textures();
+    mb.unload();
 
     CloseWindow();
 }
