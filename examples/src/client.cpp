@@ -25,18 +25,18 @@ int main() {
     MapBuilder mb = MapBuilder();
 
     Model turret_model = LoadModel("models/obj/turret.obj");
-    mb.add("turret", &turret_model);        // Add the model to the map builder
+    mb.add("turret", &turret_model);        // Add the model "turret" to the Map Builder
     Texture2D turret_texture = LoadTexture("models/obj/turret_diffuse.png");
     mb.set_material_texture("turret", MATERIAL_MAP_DIFFUSE, &turret_texture);
 
     Model house_model = LoadModel("models/obj/house.obj");
-    mb.add("house", &house_model);      // Add the model to the map builder
+    mb.add("house", &house_model);      // Add the model "house" to the Map Builder
     Texture2D house_texture = LoadTexture("models/obj/house_diffuse.png");
     mb.set_material_texture("house", MATERIAL_MAP_DIFFUSE, &house_texture);
     //--------------------------------------------------------------------------------------
 
     while(!WindowShouldClose()) {
-        // Ignore when running map builder
+        // Ignore when running the Map Builder
         //----------------------------------------------------------------
         // UpdateCamera(&camera, CAMERA_FREE);        
         // mb.draw_all_models();
@@ -47,4 +47,6 @@ int main() {
     mb.unload();
 
     CloseWindow();
+
+    return 0;
 }

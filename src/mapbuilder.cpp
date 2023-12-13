@@ -4,6 +4,7 @@
 
 MapBuilder::MapBuilder() : ModelList() {
     init_camera();
+    DisableCursor();
 }
 
 MapBuilder::~MapBuilder() {}

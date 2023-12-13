@@ -37,7 +37,7 @@ std::string ModelList::get_infocus_model_id(Camera3D camera) {
         }
     }
 
-    return nullptr;
+    return "";
 }
 
 void ModelList::load_properties() {
